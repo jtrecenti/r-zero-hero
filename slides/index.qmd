@@ -1,0 +1,512 @@
+---
+title: "R: Zero to Hero"
+format: 
+  revealjs:
+    theme: [default, custom.scss]
+    highlight-style: arrow
+    footer: "2024"
+    preview-links: auto
+    slide-number: true
+    self-contained: true
+date-format: long
+lang: pt
+---
+
+## Objetivos de aprendizagem
+
+-   Entender as vantagens de programar para ciência de dados
+-   Carregar um projeto no RStudio
+-   Ler e transformar dados com o `tidyverse`
+-   Visualizar dados com `ggplot2`
+
+
+## Dinâmica
+
+-   Slides para exposição dos conceitos
+
+-   Demonstrações no RStudio
+
+# Vantagens ao programar para fazer ciência de dados
+
+## Gratuito!
+
+O conhecimento de experts disponível para você.
+
+![](img/conhecimento.png){fig-align="center"}
+
+::: aside
+[Fonte: Allison Horst](https://allisonhorst.com/)
+:::
+
+
+## Código é texto
+
+Quanto mais você programa, mais __eficiente__ você fica.
+
+E agora, os LLMs também podem te ajudar!
+
+![](img/ctrlcv.jpg){fig-align="center"}
+
+::: aside
+[Fonte: drop.com](https://drop.com/buy/stack-overflow-the-key-macropad)
+:::
+
+## Reprodutibilidade
+
+Mais fácil de organizar, entender e reaproveitar seu trabalho.
+
+![](img/reprodut.png){fig-align="center"}
+
+::: aside
+[Fonte: Allison Horst](https://allisonhorst.com/)
+:::
+
+## Comunidade
+
+Fóruns e comunidades sempre te ajudando
+
+![](img/code_hero.jpg){fig-align="center"}
+
+::: aside
+[Fonte: Allison Horst](https://allisonhorst.com/)
+:::
+
+## O ciclo da ciência de dados
+
+O dia-a-dia de quem trabalha com ciência de dados
+
+![](img/ciclo-ciencia-de-dados.png){fig-align="center" width="900"}
+
+::: aside
+[fonte: Livro Curso-R](https://livro.curso-r.com)
+:::
+
+::: aside
+:::
+
+## Vamos ao RStudio! {background-color="#E6E7E8"}
+
+![](img/fox.gif){fig-align="center" width="430"}
+
+## RStudio
+
+Ao abrir o RStudio, você verá 4 quadrantes:
+
+```{r echo=FALSE, fig.align='center', out.width=500, out.height=400}
+knitr::include_graphics(rep("img/rstudio-editor.png"))
+```
+
+## RStudio
+
+Esses quadrantes representam o **editor**, o **console**, o **environment** e o **output**. Eles vêm nesta ordem, mas você pode organizá-los da forma que preferir acessando a seção *Pane Layout* da opção `Global options...` no menu `Tools`.
+
+O editor e o console são os dois principais painéis do RStudio. Passaremos a maior parte do tempo neles:
+
+- **Editor/Scripts**: é onde escrevemos nossos códigos. Repare que o RStudio colore algumas palavras e símbolos para facilitar a leitura do código.
+
+- **Console**: é onde rodamos o código e recebemos as saídas. **O R vive aqui!**
+
+## Atalhos
+
+Conhecer os atalhos do teclado ajuda bastante quando estamos programando no RStudio. Veja os principais:
+
+- **CTRL+ENTER**: avalia/roda a linha selecionada no script. O atalho mais utilizado.
+
+- **ALT+-**: cria no script um sinal de atribuição (`<-`). Você o usará o tempo todo.
+
+- **CTRL+SHIFT+M**: (`%>%` ou `|>`) operador *pipe*. Guarde esse atalho, será bastante utilizado.
+
+- **CTRL+1**: altera cursor para o script.
+
+- **CTRL+2**: altera cursor para o console.
+
+- **ALT+SHIFT+K**: janela com todos os atalhos disponíveis.
+
+No MacOS, substitua **CTRL** por **command** e **ALT** por **option**.
+
+## Projetos
+
+Uma funcionalidade muito importante do RStudio é a possibilidade de criar **projetos**. 
+
+Um projeto é uma pasta no seu computador. Nessa pasta, estarão todos os arquivos que você usurá ou criará na sua análise. 
+
+A principal razão de utilizar projetos é **organização**. Com eles, fica muito mais fácil importar bases de dados para dentro do R, criar análises reprodutíveis e compartilhar o nosso trabalho.
+
+**Habitue-se desde a cedo a criar um projeto para cada nova análise que for fazer.**
+
+## Carregar um projeto
+
+Para criar um projeto, clique em `Open Project...` no Menu `File`. Em seguida, encontre seu projeto e clique no arquivo com extensão `.Rproj`
+
+Ao carregar um projeto, o RStudio apontará para pasta escolhida, onde está o arquivo `.RProj`. Você pode usar esse arquivo para iniciar o RStudio já com o respectivo projeto aberto.
+
+## RStudio com um projeto aberto
+
+```{r echo=FALSE, fig.align='center'}
+knitr::include_graphics(rep("img/exemplo-projeto-aberto.png"))
+```
+
+## Navegando entre projetos
+
+```{r echo=FALSE, fig.align='center'}
+knitr::include_graphics(rep("img/exemplo-lista-projetos.png"))
+```
+
+## Cheatsheets
+
+O RStudio tem à disposição algumas *folhas de cola*, as **cheatsheets**. Elas trazem um resumão de como utilizar diversos pacotes e até o próprio RStudio. 
+Para acessá-las, basta clicar no menu `Help` e então em `Cheatsheets`, ou no [site da RStudio](https://rstudio.com/resources/cheatsheets/).
+
+```{r echo=FALSE, fig.align='center', out.width=500}
+knitr::include_graphics("img/cheatsheet-rstudio-pt.png")
+```
+
+# Importação
+
+## O que é?
+
+Importar uma base de dados para o R significa levar a informação contida no disco rígido (HD) para a memória RAM.
+
+```{r, echo=FALSE}
+knitr::include_graphics("img/import.png")
+
+library(readr)
+```
+
+## Caminhos
+
+Um passo importante na tarefa de importação de dados para o R é saber onde está o arquivo que queremos importar.
+
+Toda função de importação vai exigir um **caminho**, uma string que representa o endereço do arquivo no computador.
+
+Há duas formas de passarmos o caminho de arquivo: usar o **caminho absoluto** ou usar o **caminho relativo**.
+
+Antes de falarmos sobre a diferença dos dois, precisamos definir o que é o **diretório de trabalho**.
+
+## Caminhos absolutos
+
+Caminhos absolutos são aqueles que tem início na pasta raiz do seu computador/usuário. Por exemplo:
+
+``r getwd()``
+
+Esse é o caminho absoluto para a pasta onde esses slides foram produzidos.
+
+Na grande maioria dos casos, caminhos absolutos são uma **má prática**, pois deixam o código irreprodutível. Se você trocar de computador ou passar o script para outra pessoa rodar, o código não vai funcionar, pois o caminho absoluto para o arquivo muito provavelmente será diferente.
+
+## Caminhos relativos
+
+Caminhos relativos são aqueles que têm início no diretório de trabalho da sua sessão.
+
+O diretório de trabalho da sessão utilizada para produzir esses slides é a pasta 
+
+``r-zero-hero/`` 
+
+Veja o caminho absoluto no slide anterior. Então, o caminho relativo para a pasta onde esses slides foram produzidos seria apenas `slides/`.
+
+**Trabalhar com projetos no RStudio ajuda bastante o uso de caminhos relativos**, pois nos incentiva a colocar todos os arquivos da análise dentro da pasta do projeto.
+
+
+## Lendo arquivos de texto
+
+Para ler arquivos de texto, como arquivos `.csv` ou `.txt`, utilizaremos funções do pacote `readr`.
+
+```{r}
+#| eval: false
+#| echo: true
+library(readr)
+
+ancine <- read_csv("ancine.csv")
+```
+
+## Arquivos Excel
+
+Para ler planilhas do Excel (arquivos `.xlsx` ou `.xls`), basta utilizarmos a função `read_excel()` do pacote `readxl`.
+
+```{r}
+#| eval: false
+#| echo: true
+library(readxl)
+
+ancine_xlsx <- read_excel("ancine.xlsx")
+```
+
+##  Argumentos úteis
+
+Como o Excel é muito popular, é muito comum recebermos bases de dados desse tipo.
+
+Listamos abaixo os principais argumentos:
+
+- `sheet=` para definir em qual aba estão os dados
+
+- `skip=` para pular linhas
+
+# Transformação
+
+## O pacote dplyr
+
+O `dplyr` é o pacote mais útil para realizar manipulação de dados, pois possui funções para fazer virtualmente qualquer tipo de transformação nas linhas e colunas da base.
+
+As principais funções do dplyr são:
+
+- `filter()`: filtra linhas
+- `select()`: seleciona colunas
+- `arrange()`: ordena as linhas conforme os valores de uma coluna
+- `mutate()`: modifica ou cria novas colunas
+- `group_by()`: agrupa a base conforme uma coluna
+- `summarise()`: sumariza colunas
+
+## O pacote dplyr
+
+Todas essas funções seguem as seguintes características:
+
+- A função sempre recebe uma `tibble` e sempre devolve uma `tibble`.
+
+- Colocamos o `tibble` no primeiro argumento e o que queremos fazer nos demais argumentos.
+
+## O operador pipe `|>` (ou `%>%`)
+
+A ideia do operador pipe é a seguinte: ele vai aplicar a função do lado direito ao objeto do lado esquerdo.
+
+No exemplo a seguir, estamos aplicando a função `sum()` (lado direito) no objeto `vetor` (lado esquerdo).
+
+```{r}
+#| echo: true
+vetor <- c(1, 2, 3)
+
+vetor |> sum()
+```
+
+O código acima é equivalente a:
+
+```{r}
+#| echo: true
+sum(vetor)
+```
+
+## O operador pipe `|>` (ou `%>%`)
+
+Quando estamos aplicando apenas uma função, o pipe não parece trazer vantagens. Mas vamos ver como fica o nosso exemplo do ancine utilizando esse operador:
+
+```{r}
+#| eval: false
+#| echo: true
+
+# Sem pipe
+arrange(select(ancine, titulo, dt_lancamento), dt_lancamento)
+
+# Com pipe
+ancine |> 
+  select(titulo, dt_lancamento) |> 
+  arrange(dt_lancamento)
+```
+
+## Cheatsheet
+
+O `dplyr` é um pacote muito grande e com muitas funções. Para ajudar a lembrar de todas as funções e argumentos, o RStudio disponibiliza um cheatsheet do `dplyr` que pode ser acessado [aqui](https://rstudio.com/resources/cheatsheets/).
+
+
+# Visualização
+
+
+## Gramática de gráficos *em camadas*
+
+O pacote `{ggplot2}` segue duas filosofias que nos ajudam a entender o processo de construção dos gráficos:
+
+1. Um gráfico estatístico é uma representação visual dos dados por meio de atributos estéticos (posição, cor, forma, tamanho, ...) de formas geométricas (pontos, linhas, barras, ...). [The Grammar of Graphics](https://www.springer.com/gp/book/9780387245447).
+
+2. Um gráfico pode ser construído em camadas (um gráfico é a sobreposição de elementos visuais). [A layered grammar of graphics](https://vita.had.co.nz/papers/layered-grammar.html).
+
+## Camadas
+
+Para construir um gráfico, começamos com o *canvas*. A função `ggplot()` cria a primeira camada do nosso gráfico: uma tela em branco (cinza).
+
+```{r}
+#| dpi: 300
+#| out-width: 50%
+library(ggplot2)
+
+cars |> 
+  ggplot()
+```
+
+## Camadas
+
+::: {.panel-tabset}
+
+### Canvas
+
+```{r}
+#| label: canvas
+#| dpi: 300
+#| out-width: 100%
+cars |> 
+  ggplot()
+```
+
+### Canvas (R)
+
+```{r}
+#| label: canvas-r
+#| dpi: 300
+#| out-width: 100%
+#| echo: true
+#| eval: false
+
+cars |> 
+  ggplot()
+```
+
+### Dados
+
+```{r}
+cars
+```
+
+
+:::
+
+## Camadas
+
+::: {.panel-tabset}
+
+### Eixos
+
+```{r}
+#| label: aes-mapping
+#| dpi: 300
+#| out-width: 100%
+cars |> 
+  ggplot() +
+  aes(x = speed, y = dist)
+```
+
+### Eixos (R)
+
+```{r}
+#| label: aes-mapping-r
+#| dpi: 300
+#| out-width: 100%
+#| echo: true
+#| eval: false
+cars |> 
+  ggplot() +
+  aes(x = speed, y = dist)
+```
+
+:::
+
+## Camadas
+
+::: {.panel-tabset}
+
+### Geometria
+
+```{r}
+#| label: dispersao
+#| dpi: 300
+#| out-width: 100%
+
+cars |> 
+  ggplot() +
+  aes(x = speed, y = dist) +
+  geom_point()
+```
+
+### Geometria (R)
+
+```{r}
+#| label: dispersao-r
+#| dpi: 300
+#| out-width: 100%
+#| echo: true
+#| eval: false
+
+cars |> 
+  ggplot() +
+  aes(x = speed, y = dist) +
+  geom_point()
+```
+
+:::
+
+## Estética e detalhamentos
+
+::: {.panel-tabset}
+
+### Completo
+
+```{r}
+#| label: completo
+#| fig-width: 9
+#| fig-height: 6
+#| out-width: 80%
+#| dpi: 300
+
+ggplot(cars) +
+  aes(speed, dist) +
+  geom_point(colour = "darkblue") +
+  stat_smooth(
+    se = FALSE, colour = "lightgray", 
+    method = "loess", formula = "y ~ x"
+  ) +
+  theme_minimal(16) +
+  labs(
+    title = "A velocidade influencia na distância de parada?",
+    subtitle = "Distância necessária para parar o carro",
+    caption = paste(
+      "Fonte: Ezekiel, M. (1930) Methods of",
+      "Correlation Analysis. Wiley"),
+    x = "Velocidade", y = "Distância para parar"
+  )
+```
+
+::: footer
+.
+:::
+
+### Completo (R)
+
+```{r}
+#| label: completo-r
+#| fig-width: 9
+#| fig-height: 6
+#| dpi: 300
+#| echo: true
+#| eval: false
+
+ggplot(cars) +
+  aes(speed, dist) +
+  geom_point(colour = "darkblue") +
+  stat_smooth(
+    se = FALSE, colour = "lightgray", 
+    method = "loess", formula = "y ~ x"
+  ) +
+  theme_minimal(14) +
+  labs(
+    title = "A velocidade influencia na distância de parada?",
+    subtitle = "Distância necessária para parar o carro",
+    caption = paste(
+      "Fonte: Ezekiel, M. (1930) Methods of",
+      "Correlation Analysis. Wiley"),
+    x = "Velocidade", y = "Distância para parar"
+  )
+```
+
+:::
+
+## [Cheatsheet](https://www.rstudio.com/resources/cheatsheets/)
+
+```{r, out.width="75%"}
+knitr::include_graphics("https://raw.githubusercontent.com/rstudio/cheatsheets/main/pngs/data-visualization.png")
+```
+
+## [Qual gráfico escolher?](https://www.data-to-viz.com)
+
+```{r, out.width="90%"}
+knitr::include_graphics("img/data-to-viz.png")
+```
+
+
+## Obrigado! {background-image="img/fox_bye.gif" background-position-y="bottom 100px;" background-size="200px 200px cover"}
+
+- Se quiser acessar o código e a base de dados, entre aqui: [link](https://github.com/jtrecenti/r-zero-hero/)
