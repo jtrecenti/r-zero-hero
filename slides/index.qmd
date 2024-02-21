@@ -7,7 +7,7 @@ format:
     footer: "2024"
     preview-links: auto
     slide-number: true
-    self-contained: false
+    embed-resources: true
 date-format: long
 lang: pt
 ---

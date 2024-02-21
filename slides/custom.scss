@@ -1,5 +1,7 @@
-@import url(//db.onlinewebfonts.com/c/3718b9c08dfceed0abb9688dedf38d8d?family=Prelo-Medium);
-
+@font-face {
+  font-family: PreloMedium;
+  src: url('prelo.ttf')format('truetype');
+}
 
 /*-- scss:defaults --*/
 
@@ -12,7 +14,7 @@ $code-block-border-color: #009491;
 $presentation-heading-color: #C4161C;
 $presentation-font-size-root: 30px;
 
-$font-family-sans-serif: "Prelo Medium";
+$font-family-sans-serif: "PreloMedium", sans-serif;
 
 $presentation-slide-text-align: left;
 
