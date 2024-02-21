@@ -133,7 +133,7 @@ library(tidyverse)
 
 # importacao --------------------------------------------------------------
 
-ancine <- read_csv("20221019-quarto/ancine.csv")
+ancine <- read_csv("ancine.csv")
 
 glimpse(ancine)
 
